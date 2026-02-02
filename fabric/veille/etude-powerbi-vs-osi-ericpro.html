@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Étude Comparative | Power BI Semantic Model vs Open Semantic Interchange</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f0ff 0%, #b537ff 100%);
+            border-radius: 2px;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: #00f0ff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #00f0ff 50%, #b537ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #8892b0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: #2d3748;
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card.powerbi {
+            border-top: 3px solid #00f0ff;
+            box-shadow: 0 4px 30px rgba(0, 240, 255, 0.1);
+        }
+
+        .card.powerbi:hover {
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
+        }
+
+        .card.osi {
+            border-top: 3px solid #b537ff;
+            box-shadow: 0 4px 30px rgba(181, 55, 255, 0.1);
+        }
+
+        .card.osi:hover {
+            box-shadow: 0 10px 40px rgba(181, 55, 255, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .powerbi .card-icon {
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .osi .card-icon {
+            background: rgba(181, 55, 255, 0.15);
+            box-shadow: 0 0 20px rgba(181, 55, 255, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .powerbi .card-title {
+            color: #00f0ff;
+        }
+
+        .osi .card-title {
+            color: #b537ff;
+        }
+
+        .card-badge {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .powerbi .card-badge {
+            background: rgba(0, 240, 255, 0.2);
+            color: #00f0ff;
+        }
+
+        .osi .card-badge {
+            background: rgba(181, 55, 255, 0.2);
+            color: #b537ff;
+        }
+
+        .card-description {
+            color: #8892b0;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(136, 146, 176, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .powerbi .feature-icon {
+            background: rgba(0, 240, 255, 0.2);
+            color: #00f0ff;
+        }
+
+        .osi .feature-icon {
+            background: rgba(181, 55, 255, 0.2);
+            color: #b537ff;
+        }
+
+        .feature-text {
+            color: #e2e8f0;
+            font-size: 0.9rem;
+        }
+
+        .feature-text strong {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Comparison Table */
+        .table-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(180deg, #00f0ff 0%, #b537ff 100%);
+            border-radius: 2px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2d3748;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(181, 55, 255, 0.1) 100%);
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-table th:first-child {
+            color: #8892b0;
+        }
+
+        .comparison-table th:nth-child(2) {
+            color: #00f0ff;
+        }
+
+        .comparison-table th:nth-child(3) {
+            color: #b537ff;
+        }
+
+        .comparison-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(136, 146, 176, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table td:first-child {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .comparison-table td:nth-child(2),
+        .comparison-table td:nth-child(3) {
+            color: #8892b0;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge.proprietary {
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+        }
+
+        .status-badge.open {
+            background: rgba(57, 255, 20, 0.2);
+            color: #39ff14;
+        }
+
+        /* Key Insights */
+        .insights-section {
+            margin-bottom: 50px;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .insight-card {
+            background: #2d3748;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:nth-child(1) {
+            border-bottom-color: #00f0ff;
+        }
+
+        .insight-card:nth-child(2) {
+            border-bottom-color: #b537ff;
+        }
+
+        .insight-card:nth-child(3) {
+            border-bottom-color: #39ff14;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .insight-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .insight-text {
+            color: #8892b0;
+            font-size: 0.85rem;
+        }
+
+        /* Conclusion */
+        .conclusion {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(181, 55, 255, 0.05) 100%);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .conclusion h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .conclusion p {
+            color: #8892b0;
+            max-width: 800px;
+            margin: 0 auto 25px;
+        }
+
+        .recommendation {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #00f0ff 0%, #b537ff 100%);
+            color: #0a0e27;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(136, 146, 176, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00f0ff 0%, #b537ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .footer-text {
+            color: #8892b0;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">EricPro Analytics</div>
+            <h1>Modèle Sémantique Power BI vs Open Semantic Interchange</h1>
+            <p class="subtitle">Étude comparative des deux approches de modélisation sémantique pour l'analyse de données et l'IA</p>
+        </header>
+
+        <section class="comparison-grid">
+            <div class="card powerbi">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <div>
+                        <h2 class="card-title">Power BI Semantic Model</h2>
+                        <span class="card-badge">Microsoft Ecosystem</span>
+                    </div>
+                </div>
+                <p class="card-description">Couche de données structurée intégrée à l'écosystème Microsoft, transformant les données brutes en formats analytiques optimisés pour la BI d'entreprise.</p>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Modes de stockage flexibles</strong>
+                            Import, DirectQuery, Composite et Direct Lake pour s'adapter à tous les cas d'usage
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Langage DAX natif</strong>
+                            Expressions analytiques puissantes pour les mesures et calculs métier complexes
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Row-Level Security (RLS)</strong>
+                            Gouvernance granulaire des accès aux données par rôle utilisateur
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Intégration Microsoft Fabric</strong>
+                            Connexion native avec l'écosystème data lakehouse de Microsoft
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Réutilisabilité cross-rapports</strong>
+                            Un modèle unique comme source de vérité pour multiples visualisations
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card osi">
+                <div class="card-header">
+                    <div class="card-icon">🔗</div>
+                    <div>
+                        <h2 class="card-title">Open Semantic Interchange</h2>
+                        <span class="card-badge">Standard Ouvert</span>
+                    </div>
+                </div>
+                <p class="card-description">Initiative open source menée par Snowflake et ses partenaires (Salesforce, dbt Labs, BlackRock) pour standardiser les définitions sémantiques à l'échelle de l'industrie.</p>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Vendor-agnostic</strong>
+                            Spécification neutre permettant l'interopérabilité entre toutes les plateformes
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Format YAML standardisé</strong>
+                            Utilise MetricFlow (Apache 2.0) comme implémentation de référence
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Prêt pour l'IA</strong>
+                            Contexte sémantique unifié pour les agents IA et modèles ML
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Définir une fois, utiliser partout</strong>
+                            Métriques et KPIs cohérents entre dashboards, notebooks et applications
+                        </span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text">
+                            <strong>Gouvernance collaborative</strong>
+                            Standard communautaire avec leadership partagé entre les acteurs majeurs
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <h2 class="section-title">Comparaison Détaillée</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Critère</th>
+                        <th>Power BI Semantic Model</th>
+                        <th>Open Semantic Interchange</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Type</td>
+                        <td><span class="status-badge proprietary">Propriétaire</span></td>
+                        <td><span class="status-badge open">Open Source</span></td>
+                    </tr>
+                    <tr>
+                        <td>Éditeur / Initiateur</td>
+                        <td>Microsoft</td>
+                        <td>Snowflake + consortium (Salesforce, dbt Labs, Google, Amazon)</td>
+                    </tr>
+                    <tr>
+                        <td>Maturité</td>
+                        <td>Mature, déployé en production depuis des années</td>
+                        <td>Émergent (lancé en septembre 2025)</td>
+                    </tr>
+                    <tr>
+                        <td>Format de définition</td>
+                        <td>Modèle tabulaire Analysis Services (TMDL/BIM)</td>
+                        <td>YAML déclaratif (spécification MetricFlow)</td>
+                    </tr>
+                    <tr>
+                        <td>Langage de calcul</td>
+                        <td>DAX (Data Analysis Expressions)</td>
+                        <td>SQL natif + expressions sémantiques</td>
+                    </tr>
+                    <tr>
+                        <td>Interopérabilité</td>
+                        <td>Écosystème Microsoft (Excel, Teams, Fabric)</td>
+                        <td>Multi-plateforme (Snowflake, Databricks, BigQuery, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>Cas d'usage principal</td>
+                        <td>BI et reporting d'entreprise</td>
+                        <td>BI + AI agents + data mesh + analytics moderne</td>
+                    </tr>
+                    <tr>
+                        <td>Gouvernance</td>
+                        <td>Centralisée (Microsoft 365 Admin)</td>
+                        <td>Distribuée (standard ouvert, multi-vendor)</td>
+                    </tr>
+                    <tr>
+                        <td>Courbe d'apprentissage</td>
+                        <td>Modérée (DAX peut être complexe)</td>
+                        <td>Plus accessible (YAML + SQL standard)</td>
+                    </tr>
+                    <tr>
+                        <td>Lock-in vendeur</td>
+                        <td>Fort (écosystème Microsoft)</td>
+                        <td>Aucun (portabilité garantie par le standard)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="insights-section">
+            <h2 class="section-title">Points Clés</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">🏢</div>
+                    <h3 class="insight-title">Power BI pour l'Entreprise Microsoft</h3>
+                    <p class="insight-text">Idéal pour les organisations déjà investies dans l'écosystème Microsoft 365 / Azure, avec une gouvernance centralisée et des besoins BI classiques.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🌐</div>
+                    <h3 class="insight-title">OSI pour le Multi-Cloud</h3>
+                    <p class="insight-text">Pertinent pour les architectures data mesh, les environnements multi-cloud, et les organisations cherchant l'indépendance technologique.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🤖</div>
+                    <h3 class="insight-title">OSI pensé pour l'IA</h3>
+                    <p class="insight-text">Le standard OSI est conçu dès l'origine pour les agents IA et l'analytics augmentée, répondant aux défis de demain.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="conclusion">
+            <h2>Conclusion & Recommandation</h2>
+            <p>Le Modèle Sémantique Power BI reste la solution de référence pour la BI d'entreprise dans l'écosystème Microsoft, offrant maturité et intégration profonde. L'Open Semantic Interchange représente l'avenir de l'interopérabilité sémantique, particulièrement pour les organisations adoptant une stratégie multi-cloud ou investissant dans l'IA générative.</p>
+            <p><strong>Pour une stratégie pérenne</strong>, considérez une approche hybride : exploitez Power BI pour vos besoins BI immédiats tout en surveillant l'adoption de l'OSI pour garantir la portabilité future de vos définitions métier.</p>
+            <div class="recommendation">
+                <span>📌</span>
+                <span>Stratégie recommandée : Approche hybride progressive</span>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-logo">EricPro</div>
+            <p class="footer-text">Étude comparative réalisée en janvier 2026 • Sources : Microsoft Learn, Snowflake, DataCamp, ThoughtSpot</p>
+        </footer>
+    </div>
+</body>
+</html>
